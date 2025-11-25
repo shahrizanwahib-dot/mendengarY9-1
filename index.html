@@ -3,26 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kertas Soalan (Modul 4: Cuaca & Budaya)</title>
+    <title>Penilaian Mendengar (Modul 4)</title>
     <!-- Memuatkan Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Menggunakan fon yang lebih kemas */
         body { font-family: 'Inter', sans-serif; }
-        /* Apabila jawapan betul ditanda */
-        .correct-answer {
-            background-color: #dcfce7; color: #166534; font-weight: 600;
-            border-left: 4px solid #22c55e; padding: 0.5rem; border-radius: 0.25rem;
-        }
-        /* Apabila jawapan salah ditanda */
-        .incorrect-answer {
-            background-color: #fee2e2; color: #991b1b; text-decoration: line-through;
-            border-left: 4px solid #ef4444; padding: 0.5rem; border-radius: 0.25rem;
-        }
-        /* Menyorot input yang betul (untuk padanan) */
-        .correct-input { border-color: #22c55e; background-color: #dcfce7; box-shadow: 0 0 0 2px #22c55e; }
-        .incorrect-input { border-color: #ef4444; background-color: #fee2e2; box-shadow: 0 0 0 2px #ef4444; }
-        /* Gaya untuk tab */
+        
+        /* Gaya Tab */
         .tab-button {
             padding: 0.75rem 1.25rem; margin-right: 0.5rem; border-radius: 0.5rem 0.5rem 0 0;
             font-weight: 600; cursor: pointer; transition: all 0.3s ease;
@@ -46,12 +34,12 @@
     <div id="nameModalOverlay" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 z-50">
         <div id="nameModalContent" class="bg-white rounded-lg shadow-2xl p-8 w-full max-w-md">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">Selamat Datang!</h2>
-            <p class="text-gray-600 mb-6">Sila masukkan nama penuh anda untuk memulakan kuiz.</p>
+            <p class="text-gray-600 mb-6">Sila masukkan nama penuh anda untuk memulakan sesi penilaian (assessment).</p>
             <form id="nameForm">
                 <label for="studentName" class="block text-sm font-medium text-gray-700 mb-2">Nama Penuh</label>
                 <input type="text" id="studentName" name="studentName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Cth: Ali bin Abu" required>
                 <button type="submit" class="w-full bg-blue-600 text-white font-bold text-lg py-3 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-300 ease-in-out shadow-lg mt-6">
-                    Mulakan Kuiz
+                    Mula Menjawab
                 </button>
             </form>
         </div>
@@ -60,14 +48,14 @@
     <!-- Kontena Kuiz -->
     <div id="quizContainer" class="max-w-4xl mx-auto p-6 md:p-10 bg-white rounded-lg shadow-xl my-10">
         <header class="border-b-2 border-blue-600 pb-4 mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold text-blue-700">Latihan Mendengar (Modul 4)</h1>
+            <h1 class="text-3xl md:text-4xl font-bold text-blue-700">Penilaian Mendengar (Modul 4)</h1>
             <p class="text-lg text-gray-600 mt-2">Topik: Cuaca & Pelbagai Latar Belakang</p>
             <p class="text-md text-gray-800 mt-2 font-semibold">Pelajar: <span id="displayName" class="text-blue-700"></span></p>
         </header>
 
         <form id="quizForm">
             <p class="text-lg text-gray-700 mb-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                <strong>Arahan:</strong> Dengar rakaman dan jawab semua soalan.
+                <strong>Arahan:</strong> Dengar rakaman dan jawab semua soalan. Klik "Hantar Jawapan" apabila selesai. Markah anda akan direkodkan.
             </p>
 
             <!-- Navigasi Tab -->
@@ -317,7 +305,7 @@
                 </div>
             </div>
 
-            <button type="submit" id="submitButton" class="w-full bg-blue-600 text-white font-bold text-xl py-4 px-6 rounded-lg hover:bg-blue-700 transition shadow-lg mt-6">Semak Jawapan</button>
+            <button type="submit" id="submitButton" class="w-full bg-blue-600 text-white font-bold text-xl py-4 px-6 rounded-lg hover:bg-blue-700 transition shadow-lg mt-6">Hantar Jawapan</button>
         </form>
         <div id="result" class="hidden mt-10 p-8 bg-gray-50 rounded-lg shadow-inner text-center"></div>
     </div>
@@ -381,18 +369,11 @@
                 if (i>=15 && i<=19) { // Text inputs
                     let input = document.getElementById(q);
                     let val = input.value.trim().toUpperCase();
-                    if (val === correct[q]) { score++; input.classList.add('correct-input'); }
-                    else { input.classList.add('incorrect-input'); }
+                    if (val === correct[q]) { score++; }
                 } else { // Radios
                     let val = formData.get(q);
                     let correctVal = correct[q];
-                    let correctLabel = document.querySelector(`input[name="${q}"][value="${correctVal}"]`)?.parentElement;
-                    if(correctLabel) correctLabel.classList.add('correct-answer');
-                    
-                    if (val) {
-                        if (val === correctVal) score++;
-                        else document.querySelector(`input[name="${q}"][value="${val}"]`)?.parentElement.classList.add('incorrect-answer');
-                    }
+                    if (val && val === correctVal) score++;
                 }
             }
 
@@ -403,22 +384,22 @@
                 let ans = correct[q];
                 let qScore = 0;
                 
-                ans.forEach(v => document.querySelector(`input[name="${q}"][value="${v}"]`)?.parentElement.classList.add('correct-answer'));
-                
                 userVals.forEach(v => {
                     if (ans.includes(v)) qScore++;
-                    else {
-                        qScore--;
-                        document.querySelector(`input[name="${q}"][value="${v}"]`)?.parentElement.classList.add('incorrect-answer');
-                    }
+                    else qScore--;
                 });
                 if(qScore > 0) score += qScore; 
             });
 
             const resultDiv = document.getElementById('result');
             resultDiv.classList.remove('hidden');
-            resultDiv.innerHTML = `<h2 class="text-3xl font-bold">Markah: ${score} / ${total}</h2><p>Data sedang dihantar...</p>`;
+            resultDiv.innerHTML = `<h2 class="text-3xl font-bold text-blue-800">Terima Kasih!</h2><p class="text-lg mt-2">Jawapan anda telah dihantar.</p><h3 class="text-4xl font-bold mt-4 text-gray-800">Markah Anda: ${score} / ${total}</h3><p class="text-gray-600 mt-4 text-sm">Data sedang dihantar ke sistem...</p>`;
             
+            const allInputs = document.querySelectorAll('input, button[type="submit"]');
+            allInputs.forEach(el => el.disabled = true);
+            document.getElementById('submitButton').classList.add('bg-gray-400');
+            document.getElementById('submitButton').classList.remove('bg-blue-600', 'hover:bg-blue-700');
+
             // Send Data
             if (GOOGLE_APP_SCRIPT_URL !== 'PASTE_YOUR_URL_HERE') {
                 fetch(GOOGLE_APP_SCRIPT_URL, {
@@ -426,10 +407,10 @@
                     mode: 'no-cors',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({name: studentName, score: score, total: total, timestamp: submissionTime})
-                }).then(() => resultDiv.innerHTML += '<br><span class="text-green-600">Data berjaya direkodkan.</span>')
+                }).then(() => resultDiv.innerHTML += '<br><span class="text-green-600 font-semibold">Data berjaya direkodkan.</span>')
                   .catch(() => resultDiv.innerHTML += '<br><span class="text-red-600">Gagal menghantar data.</span>');
             } else {
-                resultDiv.innerHTML += '<br><span class="text-red-600">Amaran: URL Google Script belum ditetapkan.</span>';
+                resultDiv.innerHTML += '<br><span class="text-red-600 font-bold">Amaran: URL Google Script belum ditetapkan.</span>';
             }
         });
     </script>
